@@ -1,0 +1,14 @@
+Name: order
+Host: 0.0.0.0
+Port: 8888
+Mode: dev
+Log:
+  Encoding: plain
+UserRpc:
+  Etcd:
+    Hosts:
+    - 127.0.0.1:2379
+    Key: user.rpc
+Auth:
+  AccessSecret: $AccessSecret
+  AccessExpire: $AccessExpire
