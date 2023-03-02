@@ -4,11 +4,11 @@ Port: 8888
 Log:
   Encoding: plain
 Mysql:
-  DataSource: $user:$password@tcp($url)/$db?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+  DataSource: root:wifi2021@tcp(127.0.0.1:3306)/gozero?charset=utf8mb4&parseTime=True&loc=Local
 CacheRedis:
-  - Host: $host
-    Pass: $pass
+  - Host: 127.0.0.1:6379
+    Pass:
     Type: node
 Auth:
-  AccessSecret: $AccessSecret
-  AccessExpire: $AccessExpire
+  AccessSecret: wifi
+  AccessExpire: 100
