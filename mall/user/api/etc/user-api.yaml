@@ -10,5 +10,5 @@ CacheRedis:
     Pass:
     Type: node
 Auth:
-  AccessSecret: wifi
+  AccessSecret: woshinidhaopy123
   AccessExpire: 100
