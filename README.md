@@ -3,7 +3,7 @@
 
 
 ## 启动user-api
-`cd mall/user/api && go run user.api`
+`cd mall/user/api && go run user.go`
 
 测试登录
 ```zsh
