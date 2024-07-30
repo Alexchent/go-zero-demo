@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package policy;
+option go_package = "./pb";
+
+message User{
+    string ID =1;
+    string nickname=2;
+    string telephone=3;
+    string birthday=4;
+    string gender=5;
+    string score=6;
+    string balance=7;
+}
+
+message RuleOptions{
+    User user = 1;
+}
+
+message Input{
+    string cate=1;
+    string attr=2;
+    RuleOptions rule=3;
+}
+
+message DeleteReq {
+    string ID=1;
+    string Msg =2;
+}
+
+message CheckRep{
+    bool ok = 1;
+}
+
+message Placeholder{}
+
+service Policy {
+    rpc Add(Input) returns (Placeholder);
+    rpc Delete(DeleteReq) returns (Placeholder);
+    rpc Check(RuleOptions) returns (CheckRep);
+}

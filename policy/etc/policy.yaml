@@ -1,0 +1,9 @@
+Name: policy.rpc
+ListenOn: 0.0.0.0:12345
+Mode: dev
+Log:
+  Mode: console
+  Path: logs
+  Stat: false
+  KeepDays: 30
+  Encoding: plain
