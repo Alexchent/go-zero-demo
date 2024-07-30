@@ -5,19 +5,21 @@ option go_package = "./pb";
 
 message RuleOptions{
     string UserID =1;
-    string nickname=2;
-    string telephone=3;
-    string birthday=4;
-    string gender=5;
-    string score=6;
-    string balance=7;
-    string channel=8;
+    string Nickname=2;
+    string Telephone=3;
+    string Birthday=4;
+    int64 Gender=5;
+    int64 Score=6;
+    int64 Balance=7;
+    string Channel=8;
+    string AppId=9;
+    bool HavePay=10;
 }
 
 message Input{
     string cate=1;
     string attr=2;
-    RuleOptions rule=3;
+    string rule=3;
 }
 
 message AddRep{
@@ -29,8 +31,12 @@ message DeleteReq {
     string Msg = 2;
 }
 
+message CheckReq{
+    string cate=1;
+    RuleOptions user=2;
+}
 message CheckRep{
-    bool ok = 1;
+    repeated Input list=1;
 }
 
 message Placeholder{
@@ -39,5 +45,5 @@ message Placeholder{
 service Policy {
     rpc Add(Input) returns (AddRep);
     rpc Delete(DeleteReq) returns (Placeholder);
-    rpc Check(RuleOptions) returns (CheckRep);
+    rpc Check(CheckReq) returns (CheckRep);
 }

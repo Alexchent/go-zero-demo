@@ -32,7 +32,7 @@ func (s *PolicyServer) Delete(ctx context.Context, in *pb.DeleteReq) (*pb.Placeh
 	return l.Delete(in)
 }
 
-func (s *PolicyServer) Check(ctx context.Context, in *pb.RuleOptions) (*pb.CheckRep, error) {
+func (s *PolicyServer) Check(ctx context.Context, in *pb.CheckReq) (*pb.CheckRep, error) {
 	l := logic.NewCheckLogic(ctx, s.svcCtx)
 	return l.Check(in)
 }

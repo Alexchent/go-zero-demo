@@ -20,7 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 type PolicyClient interface {
 	Add(ctx context.Context, in *Input, opts ...grpc.CallOption) (*AddRep, error)
 	Delete(ctx context.Context, in *DeleteReq, opts ...grpc.CallOption) (*Placeholder, error)
-	Check(ctx context.Context, in *RuleOptions, opts ...grpc.CallOption) (*CheckRep, error)
+	Check(ctx context.Context, in *CheckReq, opts ...grpc.CallOption) (*CheckRep, error)
 }
 
 type policyClient struct {
@@ -49,7 +49,7 @@ func (c *policyClient) Delete(ctx context.Context, in *DeleteReq, opts ...grpc.C
 	return out, nil
 }
 
-func (c *policyClient) Check(ctx context.Context, in *RuleOptions, opts ...grpc.CallOption) (*CheckRep, error) {
+func (c *policyClient) Check(ctx context.Context, in *CheckReq, opts ...grpc.CallOption) (*CheckRep, error) {
 	out := new(CheckRep)
 	err := c.cc.Invoke(ctx, "/policy.Policy/Check", in, out, opts...)
 	if err != nil {
@@ -64,7 +64,7 @@ func (c *policyClient) Check(ctx context.Context, in *RuleOptions, opts ...grpc.
 type PolicyServer interface {
 	Add(context.Context, *Input) (*AddRep, error)
 	Delete(context.Context, *DeleteReq) (*Placeholder, error)
-	Check(context.Context, *RuleOptions) (*CheckRep, error)
+	Check(context.Context, *CheckReq) (*CheckRep, error)
 	mustEmbedUnimplementedPolicyServer()
 }
 
@@ -78,7 +78,7 @@ func (UnimplementedPolicyServer) Add(context.Context, *Input) (*AddRep, error) {
 func (UnimplementedPolicyServer) Delete(context.Context, *DeleteReq) (*Placeholder, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
-func (UnimplementedPolicyServer) Check(context.Context, *RuleOptions) (*CheckRep, error) {
+func (UnimplementedPolicyServer) Check(context.Context, *CheckReq) (*CheckRep, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Check not implemented")
 }
 func (UnimplementedPolicyServer) mustEmbedUnimplementedPolicyServer() {}
@@ -131,7 +131,7 @@ func _Policy_Delete_Handler(srv interface{}, ctx context.Context, dec func(inter
 }
 
 func _Policy_Check_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RuleOptions)
+	in := new(CheckReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -143,7 +143,7 @@ func _Policy_Check_Handler(srv interface{}, ctx context.Context, dec func(interf
 		FullMethod: "/policy.Policy/Check",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PolicyServer).Check(ctx, req.(*RuleOptions))
+		return srv.(PolicyServer).Check(ctx, req.(*CheckReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }

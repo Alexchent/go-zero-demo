@@ -2,8 +2,6 @@ package logic
 
 import (
 	"context"
-	"database/sql"
-	"encoding/json"
 	"go-zero-demo/policy/internal/svc"
 	"go-zero-demo/policy/model"
 	"go-zero-demo/policy/pb/pb"
@@ -27,18 +25,10 @@ func NewAddLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AddLogic {
 }
 
 func (l *AddLogic) Add(in *pb.Input) (*pb.AddRep, error) {
-	rules, err := json.Marshal(in.GetRule())
-	if err != nil {
-		return nil, err
-	}
-	logx.Info("rules:", rules)
 	insert, err := l.svcCtx.PolicyModel.Insert(l.ctx, &model.Policy{
-		Cate: in.GetCate(),
-		Attr: in.GetAttr(),
-		Rule: sql.NullString{
-			String: string(rules),
-			Valid:  true,
-		},
+		Cate:    in.GetCate(),
+		Attr:    in.GetAttr(),
+		Rule:    in.GetRule(),
 		Created: time.Now(),
 		Updated: time.Now(),
 		State:   0,

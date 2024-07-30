@@ -3,6 +3,8 @@ package logic
 import (
 	"context"
 	"database/sql"
+	"errors"
+	"go-zero-demo/policy/model"
 	"time"
 
 	"go-zero-demo/policy/internal/svc"
@@ -27,7 +29,7 @@ func NewDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeleteLogi
 
 func (l *DeleteLogic) Delete(in *pb.DeleteReq) (*pb.Placeholder, error) {
 	one, err := l.svcCtx.PolicyModel.FindOne(l.ctx, uint64(in.GetID()))
-	if err != nil {
+	if err != nil && !errors.Is(err, model.ErrNotFound) {
 		return nil, err
 	}
 	one.Updated = time.Now()

@@ -7,6 +7,7 @@ import (
 	"database/sql"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/zeromicro/go-zero/core/stores/builder"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
@@ -34,14 +35,14 @@ type (
 	}
 
 	Policy struct {
-		Id      uint64         `db:"id"`
-		Cate    string         `db:"cate"`  // 类别
-		Attr    sql.NullString `db:"attr"`  // 对象信息
-		Rule    sql.NullString `db:"rule"`  // 匹配规则
-		State   int64          `db:"state"` // 状态0关闭 1开启
-		Created sql.NullTime   `db:"created"`
-		Updated sql.NullTime   `db:"updated"`
-		Deleted sql.NullTime   `db:"deleted"`
+		Id      uint64       `db:"id"`
+		Cate    string       `db:"cate"`  // 类别
+		Attr    string       `db:"attr"`  // 对象信息
+		Rule    string       `db:"rule"`  // 匹配规则
+		State   int64        `db:"state"` // 状态0关闭 1开启
+		Created time.Time    `db:"created"`
+		Updated time.Time    `db:"updated"`
+		Deleted sql.NullTime `db:"deleted"`
 	}
 )
 
