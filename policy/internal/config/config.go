@@ -4,4 +4,9 @@ import "github.com/zeromicro/go-zero/zrpc"
 
 type Config struct {
 	zrpc.RpcServerConf
+	DB DB
+}
+
+type DB struct {
+	Datasource string
 }

@@ -7,3 +7,6 @@ Log:
   Stat: false
   KeepDays: 30
   Encoding: plain
+
+DB:
+  Datasource: "root:root@tcp(127.0.0.1:3306)/prd_playlet_device?charset=utf8mb4&parseTime=True&loc=Local"

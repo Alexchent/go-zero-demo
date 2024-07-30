@@ -18,7 +18,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PolicyClient interface {
-	Add(ctx context.Context, in *Input, opts ...grpc.CallOption) (*Placeholder, error)
+	Add(ctx context.Context, in *Input, opts ...grpc.CallOption) (*AddRep, error)
 	Delete(ctx context.Context, in *DeleteReq, opts ...grpc.CallOption) (*Placeholder, error)
 	Check(ctx context.Context, in *RuleOptions, opts ...grpc.CallOption) (*CheckRep, error)
 }
@@ -31,8 +31,8 @@ func NewPolicyClient(cc grpc.ClientConnInterface) PolicyClient {
 	return &policyClient{cc}
 }
 
-func (c *policyClient) Add(ctx context.Context, in *Input, opts ...grpc.CallOption) (*Placeholder, error) {
-	out := new(Placeholder)
+func (c *policyClient) Add(ctx context.Context, in *Input, opts ...grpc.CallOption) (*AddRep, error) {
+	out := new(AddRep)
 	err := c.cc.Invoke(ctx, "/policy.Policy/Add", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -62,7 +62,7 @@ func (c *policyClient) Check(ctx context.Context, in *RuleOptions, opts ...grpc.
 // All implementations must embed UnimplementedPolicyServer
 // for forward compatibility
 type PolicyServer interface {
-	Add(context.Context, *Input) (*Placeholder, error)
+	Add(context.Context, *Input) (*AddRep, error)
 	Delete(context.Context, *DeleteReq) (*Placeholder, error)
 	Check(context.Context, *RuleOptions) (*CheckRep, error)
 	mustEmbedUnimplementedPolicyServer()
@@ -72,7 +72,7 @@ type PolicyServer interface {
 type UnimplementedPolicyServer struct {
 }
 
-func (UnimplementedPolicyServer) Add(context.Context, *Input) (*Placeholder, error) {
+func (UnimplementedPolicyServer) Add(context.Context, *Input) (*AddRep, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Add not implemented")
 }
 func (UnimplementedPolicyServer) Delete(context.Context, *DeleteReq) (*Placeholder, error) {

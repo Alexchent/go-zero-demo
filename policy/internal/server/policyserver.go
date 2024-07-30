@@ -22,7 +22,7 @@ func NewPolicyServer(svcCtx *svc.ServiceContext) *PolicyServer {
 	}
 }
 
-func (s *PolicyServer) Add(ctx context.Context, in *pb.Input) (*pb.Placeholder, error) {
+func (s *PolicyServer) Add(ctx context.Context, in *pb.Input) (*pb.AddRep, error) {
 	l := logic.NewAddLogic(ctx, s.svcCtx)
 	return l.Add(in)
 }
