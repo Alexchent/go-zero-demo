@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"fmt"
 	"github.com/expr-lang/expr"
 
 	"go-zero-demo/policy/internal/svc"
@@ -31,7 +32,7 @@ func (l *CheckLogic) Check(in *pb.CheckReq) (*pb.CheckRep, error) {
 	}
 	data := make([]*pb.Input, 0)
 	for _, p := range policy {
-		logx.Info("expr:", p.Rule, in.GetUser())
+		logx.Info(fmt.Sprintf("ID:【%d】，rule:【%s】", p.Id, p.Rule))
 		program, _ := expr.Compile(p.Rule, expr.AsBool())
 		out, err := expr.Run(program, in.GetUser())
 		if err != nil {
