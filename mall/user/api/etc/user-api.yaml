@@ -3,6 +3,7 @@ Host: 0.0.0.0
 Port: 8888
 Log:
   Encoding: plain
+  Stat: false
 Mysql:
   DataSource: root:root@tcp(127.0.0.1:3306)/demo?charset=utf8mb4&parseTime=True&loc=Local
 CacheRedis:

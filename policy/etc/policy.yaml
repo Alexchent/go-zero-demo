@@ -1,5 +1,9 @@
 Name: policy.rpc
 ListenOn: 0.0.0.0:12345
+Etcd:
+  Hosts:
+    - 127.0.0.1:2379
+  Key: policy.rpc
 Mode: dev
 Log:
   Mode: console
@@ -10,3 +14,7 @@ Log:
 
 DB:
   Datasource: "root:root@tcp(127.0.0.1:3306)/prd_playlet_device?charset=utf8mb4&parseTime=True&loc=Local"
+CacheRedis:
+  - Host: 127.0.0.1:6379
+    Pass:
+    Type: node

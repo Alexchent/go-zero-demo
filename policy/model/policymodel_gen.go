@@ -10,6 +10,8 @@ import (
 	"time"
 
 	"github.com/zeromicro/go-zero/core/stores/builder"
+	"github.com/zeromicro/go-zero/core/stores/cache"
+	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"github.com/zeromicro/go-zero/core/stringx"
 )
@@ -19,6 +21,8 @@ var (
 	policyRows                = strings.Join(policyFieldNames, ",")
 	policyRowsExpectAutoSet   = strings.Join(stringx.Remove(policyFieldNames, "`id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), ",")
 	policyRowsWithPlaceHolder = strings.Join(stringx.Remove(policyFieldNames, "`id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), "=?,") + "=?"
+
+	cachePolicyIdPrefix = "cache:policy:id:"
 )
 
 type (
@@ -30,7 +34,7 @@ type (
 	}
 
 	defaultPolicyModel struct {
-		conn  sqlx.SqlConn
+		sqlc.CachedConn
 		table string
 	}
 
@@ -46,27 +50,33 @@ type (
 	}
 )
 
-func newPolicyModel(conn sqlx.SqlConn) *defaultPolicyModel {
+func newPolicyModel(conn sqlx.SqlConn, c cache.CacheConf, opts ...cache.Option) *defaultPolicyModel {
 	return &defaultPolicyModel{
-		conn:  conn,
-		table: "`policy`",
+		CachedConn: sqlc.NewConn(conn, c, opts...),
+		table:      "`policy`",
 	}
 }
 
 func (m *defaultPolicyModel) Delete(ctx context.Context, id uint64) error {
-	query := fmt.Sprintf("delete from %s where `id` = ?", m.table)
-	_, err := m.conn.ExecCtx(ctx, query, id)
+	policyIdKey := fmt.Sprintf("%s%v", cachePolicyIdPrefix, id)
+	_, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
+		query := fmt.Sprintf("delete from %s where `id` = ?", m.table)
+		return conn.ExecCtx(ctx, query, id)
+	}, policyIdKey)
 	return err
 }
 
 func (m *defaultPolicyModel) FindOne(ctx context.Context, id uint64) (*Policy, error) {
-	query := fmt.Sprintf("select %s from %s where `id` = ? limit 1", policyRows, m.table)
+	policyIdKey := fmt.Sprintf("%s%v", cachePolicyIdPrefix, id)
 	var resp Policy
-	err := m.conn.QueryRowCtx(ctx, &resp, query, id)
+	err := m.QueryRowCtx(ctx, &resp, policyIdKey, func(ctx context.Context, conn sqlx.SqlConn, v any) error {
+		query := fmt.Sprintf("select %s from %s where `id` = ? limit 1", policyRows, m.table)
+		return conn.QueryRowCtx(ctx, v, query, id)
+	})
 	switch err {
 	case nil:
 		return &resp, nil
-	case sqlx.ErrNotFound:
+	case sqlc.ErrNotFound:
 		return nil, ErrNotFound
 	default:
 		return nil, err
@@ -74,15 +84,30 @@ func (m *defaultPolicyModel) FindOne(ctx context.Context, id uint64) (*Policy, e
 }
 
 func (m *defaultPolicyModel) Insert(ctx context.Context, data *Policy) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?)", m.table, policyRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.Cate, data.Attr, data.Rule, data.State, data.Created, data.Updated, data.Deleted)
+	policyIdKey := fmt.Sprintf("%s%v", cachePolicyIdPrefix, data.Id)
+	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
+		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?)", m.table, policyRowsExpectAutoSet)
+		return conn.ExecCtx(ctx, query, data.Cate, data.Attr, data.Rule, data.State, data.Created, data.Updated, data.Deleted)
+	}, policyIdKey)
 	return ret, err
 }
 
 func (m *defaultPolicyModel) Update(ctx context.Context, data *Policy) error {
-	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, policyRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.Cate, data.Attr, data.Rule, data.State, data.Created, data.Updated, data.Deleted, data.Id)
+	policyIdKey := fmt.Sprintf("%s%v", cachePolicyIdPrefix, data.Id)
+	_, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
+		query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, policyRowsWithPlaceHolder)
+		return conn.ExecCtx(ctx, query, data.Cate, data.Attr, data.Rule, data.State, data.Created, data.Updated, data.Deleted, data.Id)
+	}, policyIdKey)
 	return err
+}
+
+func (m *defaultPolicyModel) formatPrimary(primary any) string {
+	return fmt.Sprintf("%s%v", cachePolicyIdPrefix, primary)
+}
+
+func (m *defaultPolicyModel) queryPrimary(ctx context.Context, conn sqlx.SqlConn, v, primary any) error {
+	query := fmt.Sprintf("select %s from %s where `id` = ? limit 1", policyRows, m.table)
+	return conn.QueryRowCtx(ctx, v, query, primary)
 }
 
 func (m *defaultPolicyModel) tableName() string {

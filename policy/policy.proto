@@ -14,12 +14,18 @@ message RuleOptions{
     string Channel=8;
     string AppId=9;
     bool HavePay=10;
+    int64 ReadTime=11;
+    int64 ListenTime=12;
 }
 
 message Input{
     string cate=1;
     string attr=2;
     string rule=3;
+}
+
+message AddReq{
+    int64 ID = 1;
 }
 
 message AddRep{
@@ -44,6 +50,7 @@ message Placeholder{
 
 service Policy {
     rpc Add(Input) returns (AddRep);
+    rpc Update(Input) returns (AddRep);
     rpc Delete(DeleteReq) returns (Placeholder);
     rpc Check(CheckReq) returns (CheckRep);
 }

@@ -3,6 +3,7 @@ package model
 import (
 	"context"
 	"fmt"
+	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
 
@@ -13,7 +14,6 @@ type (
 	// and implement the added methods in customPolicyModel.
 	PolicyModel interface {
 		policyModel
-		withSession(session sqlx.Session) PolicyModel
 		FindByCate(ctx context.Context, cate string) ([]Policy, error)
 	}
 
@@ -23,19 +23,15 @@ type (
 )
 
 // NewPolicyModel returns a model for the database table.
-func NewPolicyModel(conn sqlx.SqlConn) PolicyModel {
+func NewPolicyModel(conn sqlx.SqlConn, c cache.CacheConf, opts ...cache.Option) PolicyModel {
 	return &customPolicyModel{
-		defaultPolicyModel: newPolicyModel(conn),
+		defaultPolicyModel: newPolicyModel(conn, c, opts...),
 	}
 }
 
-func (m *customPolicyModel) withSession(session sqlx.Session) PolicyModel {
-	return NewPolicyModel(sqlx.NewSqlConnFromSession(session))
-}
-
-func (m *defaultPolicyModel) FindByCate(ctx context.Context, cate string) ([]Policy, error) {
-	query := fmt.Sprintf("select %s from %s where `cate` = ? ", policyRows, m.table)
+func (m *customPolicyModel) FindByCate(ctx context.Context, cate string) ([]Policy, error) {
+	query := fmt.Sprintf("select %s from %s where `state` = ? AND `cate` = ? ", policyRows, m.table)
 	resp := make([]Policy, 0)
-	err := m.conn.QueryRowsCtx(ctx, &resp, query, cate)
+	err := m.QueryRowsNoCache(&resp, query, Policy_STATE_ON, cate)
 	return resp, err
 }

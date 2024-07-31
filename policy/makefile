@@ -8,7 +8,7 @@ protoc:
 
 .PHONY: model-ddl
 model-ddl:
-	goctl model mysql ddl --src model/*.sql --dir model
+	goctl model mysql ddl --src model/*.sql --dir model --cache
 
 .PHONY: model-source
 model-source:
