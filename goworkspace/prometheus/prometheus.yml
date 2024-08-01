@@ -31,8 +31,9 @@ scrape_configs:
   # 我们自己的商城项目配置
   - job_name: 'mall'
     static_configs:
-      # 目标的采集地址
-      - targets: ['localhost:12345']
+      # 目标的采集地址，如果go服务与prometheus不在同一个容器上，那么IP不能是127.0.0.1必须是本机实际IP，
+      # mac查看本机IP： ifconfig | grep 10
+      - targets: ['localhost:9091']
         labels:
           # 自定义标签
           app: 'policy-rpc'

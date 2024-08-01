@@ -4,6 +4,7 @@ Etcd:
   Hosts:
     - 127.0.0.1:2379
   Key: policy.rpc
+
 Mode: dev
 Log:
   Mode: console
@@ -18,3 +19,8 @@ CacheRedis:
   - Host: 127.0.0.1:6379
     Pass:
     Type: node
+
+Prometheus:
+  Host: 0.0.0.0
+  Port: 9091
+  Path: /metrics
