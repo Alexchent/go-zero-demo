@@ -4,6 +4,7 @@ Port: 8888
 Mode: dev
 Log:
   Encoding: plain
+  Stat: false
 UserRpc:
   Etcd:
     Hosts:
@@ -12,3 +13,10 @@ UserRpc:
 Auth:
   AccessSecret: $AccessSecret
   AccessExpire: $AccessExpire
+
+#链路追踪
+Telemetry:
+  Name: order-api
+  Endpoint: http://127.0.0.1:14268/api/traces
+  Sampler: 1.0
+  Batcher: jaeger

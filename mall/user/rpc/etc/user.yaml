@@ -2,7 +2,15 @@ Name: user.rpc
 ListenOn: 0.0.0.0:8080
 Log:
   Encoding: plain
+  Stat: false
 Etcd:
   Hosts:
   - 127.0.0.1:2379
   Key: user.rpc
+
+#链路追踪
+Telemetry:
+  Name: user-rpc
+  Endpoint: http://127.0.0.1:14268/api/traces
+  Sampler: 1.0
+  Batcher: jaeger
