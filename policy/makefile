@@ -19,3 +19,15 @@ model-source:
 proto:
 	goctl rpc -o polic.proto
 
+USER=$(shell echo $$USER)
+GITHASH?=$(shell git rev-parse --short HEAD)
+
+.PHONY: img
+img:
+	docker build -t ${USER}/policy:${GITHASH} .
+
+# 使用 .env 文件中的变量
+include .env
+.PHONY: test
+test:
+	echo ${DB_DATABASE}

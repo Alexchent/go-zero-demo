@@ -1,6 +1,6 @@
 module go-zero-demo/policy
 
-go 1.22.0
+go 1.22
 
 require (
 	github.com/expr-lang/expr v1.16.9
