@@ -4,7 +4,7 @@ doc:
 
 .PHONY: protoc
 protoc:
-	goctl rpc protoc policy.proto --go_out=./pb --go-grpc_out=./pb --zrpc_out=. --client=false
+	goctl rpc protoc policy.proto --go_out=./pb --go-grpc_out=./pb --zrpc_out=.
 
 .PHONY: model-ddl
 model-ddl:

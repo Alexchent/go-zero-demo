@@ -13,7 +13,7 @@ import (
 
 type PolicyServer struct {
 	svcCtx *svc.ServiceContext
-	pb.UnimplementedPolicyServer
+	policy.UnimplementedPolicyServer
 }
 
 func NewPolicyServer(svcCtx *svc.ServiceContext) *PolicyServer {
@@ -22,17 +22,22 @@ func NewPolicyServer(svcCtx *svc.ServiceContext) *PolicyServer {
 	}
 }
 
-func (s *PolicyServer) Add(ctx context.Context, in *pb.Input) (*pb.AddRep, error) {
+func (s *PolicyServer) Add(ctx context.Context, in *policy.Input) (*policy.AddRep, error) {
 	l := logic.NewAddLogic(ctx, s.svcCtx)
 	return l.Add(in)
 }
 
-func (s *PolicyServer) Delete(ctx context.Context, in *pb.DeleteReq) (*pb.Placeholder, error) {
+func (s *PolicyServer) Update(ctx context.Context, in *policy.Input) (*policy.AddRep, error) {
+	l := logic.NewUpdateLogic(ctx, s.svcCtx)
+	return l.Update(in)
+}
+
+func (s *PolicyServer) Delete(ctx context.Context, in *policy.DeleteReq) (*policy.Placeholder, error) {
 	l := logic.NewDeleteLogic(ctx, s.svcCtx)
 	return l.Delete(in)
 }
 
-func (s *PolicyServer) Check(ctx context.Context, in *pb.CheckReq) (*pb.CheckRep, error) {
+func (s *PolicyServer) Check(ctx context.Context, in *policy.CheckReq) (*policy.CheckRep, error) {
 	l := logic.NewCheckLogic(ctx, s.svcCtx)
 	return l.Check(in)
 }
