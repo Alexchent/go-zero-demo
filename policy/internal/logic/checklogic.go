@@ -6,7 +6,7 @@ import (
 	"github.com/expr-lang/expr"
 
 	"go-zero-demo/policy/internal/svc"
-	"go-zero-demo/policy/pb/pb"
+	pb "go-zero-demo/policy/pb/policy"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

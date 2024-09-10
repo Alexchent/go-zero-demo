@@ -22,6 +22,8 @@ message Input{
     string cate=1;
     string attr=2;
     string rule=3;
+    optional int64 ID=4;
+    optional int64 State=5;
 }
 
 message AddReq{
@@ -30,6 +32,9 @@ message AddReq{
 
 message AddRep{
     int64 ID = 1;
+}
+
+message UpdateResp{
 }
 
 message DeleteReq {
@@ -50,7 +55,7 @@ message Placeholder{
 
 service Policy {
     rpc Add(Input) returns (AddRep);
-    rpc Update(Input) returns (AddRep);
+    rpc Update(Input) returns (UpdateResp);
     rpc Delete(DeleteReq) returns (Placeholder);
     rpc Check(CheckReq) returns (CheckRep);
 }

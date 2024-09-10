@@ -4,38 +4,38 @@ import (
 	"context"
 	"go-zero-demo/policy/internal/svc"
 	"go-zero-demo/policy/model"
-	pb "go-zero-demo/policy/pb/policy"
+	"go-zero-demo/policy/pb/policy"
 	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type AddLogic struct {
+type UpdateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewAddLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AddLogic {
-	return &AddLogic{
+func NewUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateLogic {
+	return &UpdateLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
 }
 
-func (l *AddLogic) Add(in *pb.Input) (*pb.AddRep, error) {
-	insert, err := l.svcCtx.PolicyModel.Insert(l.ctx, &model.Policy{
+func (l *UpdateLogic) Update(in *policy.Input) (*policy.UpdateResp, error) {
+
+	err := l.svcCtx.PolicyModel.Update(l.ctx, &model.Policy{
+		Id:      uint64(in.GetID()),
 		Cate:    in.GetCate(),
 		Attr:    in.GetAttr(),
 		Rule:    in.GetRule(),
-		Created: time.Now(),
+		State:   in.GetState(),
 		Updated: time.Now(),
-		State:   0,
 	})
 	if err != nil {
 		return nil, err
 	}
-	id, err := insert.LastInsertId()
-	return &pb.AddRep{ID: id}, err
+	return &policy.UpdateResp{}, err
 }

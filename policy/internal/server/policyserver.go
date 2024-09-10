@@ -8,7 +8,7 @@ import (
 
 	"go-zero-demo/policy/internal/logic"
 	"go-zero-demo/policy/internal/svc"
-	"go-zero-demo/policy/pb/pb"
+	"go-zero-demo/policy/pb/policy"
 )
 
 type PolicyServer struct {
@@ -27,7 +27,7 @@ func (s *PolicyServer) Add(ctx context.Context, in *policy.Input) (*policy.AddRe
 	return l.Add(in)
 }
 
-func (s *PolicyServer) Update(ctx context.Context, in *policy.Input) (*policy.AddRep, error) {
+func (s *PolicyServer) Update(ctx context.Context, in *policy.Input) (*policy.UpdateResp, error) {
 	l := logic.NewUpdateLogic(ctx, s.svcCtx)
 	return l.Update(in)
 }

@@ -7,7 +7,7 @@ import (
 	"go-zero-demo/policy/internal/config"
 	"go-zero-demo/policy/internal/server"
 	"go-zero-demo/policy/internal/svc"
-	"go-zero-demo/policy/pb/pb"
+	"go-zero-demo/policy/pb/policy"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"
@@ -26,8 +26,7 @@ func main() {
 	ctx := svc.NewServiceContext(c)
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
-		pb.RegisterPolicyServer(grpcServer, server.NewPolicyServer(ctx))
-
+		policy.RegisterPolicyServer(grpcServer, server.NewPolicyServer(ctx))
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)
 		}
